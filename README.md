@@ -116,15 +116,11 @@ A free, fast web tool to download cover art and thumbnails from YouTube and YouT
 
 ### Environment Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `SUPABASE_URL` | Your Supabase project URL | Yes |
-| `SUPABASE_SERVICE_KEY` | Supabase service role key (not anon key) | Yes |
-| `IP_HASH_SALT` | Random salt for hashing IP addresses | Yes |
-| `ADMIN_EMAIL` | Admin login email address | Yes (Phase 3) |
-| `ADMIN_PASSWORD_HASH` | Bcrypt hash of admin password | Yes (Phase 3) |
-| `JWT_SECRET` | Secret for signing JWT tokens (64+ chars) | Yes (Phase 3) |
-| `TOTP_SECRET` | Base32 TOTP secret for 2FA | Optional |
+| Variable | Description |
+|----------|-------------|
+| `SUPABASE_URL` | Your Supabase project URL |
+| `SUPABASE_SERVICE_KEY` | Supabase service role key (not anon key) |
+| `IP_HASH_SALT` | Random salt for hashing IP addresses |
 
 ## Analytics Events
 
@@ -139,40 +135,6 @@ CoverGrab tracks anonymous usage events:
 | `invalid_domain` | URL domain not supported |
 | `invalid_video_id` | No valid video ID found |
 | `no_thumbnail` | All thumbnail variants failed |
-| `cta_bmc` | User clicked support/BMC button |
-| `cta_leave` | User clicked leave with quote button |
-
-## Admin Dashboard
-
-CoverGrab includes a private admin dashboard at `/admin` for viewing analytics.
-
-### Features
-- **Authentication**: Secure login with email/password + optional TOTP 2FA
-- **Summary Stats**: Page views, cover successes, downloads, conversion rates
-- **Performance Metrics**: P50/P95 time-to-cover
-- **Breakdowns**: Top countries, link types, thumbnail sizes
-- **Time Series**: Daily trends for the last 7/30 days
-- **Error Tracking**: Bad URLs, invalid domains, failed thumbnails
-
-### Setting Up Admin Access
-
-1. Generate a bcrypt hash of your password:
-   ```bash
-   node -e "console.log(require('bcryptjs').hashSync('your-password', 12))"
-   ```
-
-2. Generate a JWT secret:
-   ```bash
-   openssl rand -hex 64
-   ```
-
-3. Add environment variables to Netlify:
-   - `ADMIN_EMAIL` - Your admin email
-   - `ADMIN_PASSWORD_HASH` - The bcrypt hash from step 1
-   - `JWT_SECRET` - The random string from step 2
-   - (Optional) `TOTP_SECRET` - For 2FA, generate with an authenticator app
-
-4. Access the dashboard at `/admin/login`
 
 ## Privacy
 
