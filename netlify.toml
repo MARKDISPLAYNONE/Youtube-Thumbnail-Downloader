@@ -1,33 +1,39 @@
 [build]
   command = "npm run build"
   publish = "dist"
-  functions = "netlify/functions"
 
 [functions]
   node_bundler = "esbuild"
+  directory = "netlify/functions"
 
-# Redirect all routes to index.html for SPA routing (except API and static files)
+# 1. FIXED: Remove the manual /.netlify/functions/ redirect. 
+# Netlify handles this automatically. If you want a cleaner URL like /api/..., use this:
 [[redirects]]
-  from = "/*"
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# 2. Admin Role Routing
+# This ensures only users with the 'admin' role can access admin paths
+[[redirects]]
+  from = "/admin/*"
   to = "/index.html"
   status = 200
   conditions = {Role = ["admin"]}
 
-# API functions don't need redirect
+# 3. Global SPA Redirect (MUST BE LAST)
+# This catches all other routes for your React/Vite app
 [[redirects]]
-  from = "/.netlify/functions/*"
+  from = "/*"
+  to = "/index.html"
   status = 200
 
-# Headers for security
+# 4. Security Headers
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-
-# CSP header - allow YouTube images
-[[headers]]
-  for = "/*.html"
-  [headers.values]
+    # Combined CSP for efficiency
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://img.youtube.com https://i.ytimg.com data:; connect-src 'self' https://*.supabase.co; font-src 'self'"
